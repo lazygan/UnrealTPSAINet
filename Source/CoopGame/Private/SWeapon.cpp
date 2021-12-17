@@ -11,12 +11,6 @@
 #include "TimerManager.h"
 #include "Net/UnrealNetwork.h"
 
-static int32 DebugWeaponDrawing = 0;
-FAutoConsoleVariableRef CVARDebugWeaponDrawing(
-	TEXT("COOP.DebugWeapons"), 
-	DebugWeaponDrawing, 
-	TEXT("Draw Debug Lines for Weapons"), 
-	ECVF_Cheat);
 
 
 // Sets default values
@@ -114,11 +108,6 @@ void ASWeapon::Fire()
 
 		}
 
-		if (DebugWeaponDrawing > 0)
-		{
-			DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
-		}
-
 		PlayFireEffects(TracerEndPoint);
 
 		if (HasAuthority())
@@ -172,17 +161,6 @@ void ASWeapon::PlayFireEffects(FVector TraceEnd)
 	if (MuzzleEffect)
 	{
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
-	}
-
-	if (TracerEffect)
-	{
-		FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
-
-		UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, MuzzleLocation);
-		if (TracerComp)
-		{
-			TracerComp->SetVectorParameter(TracerTargetName, TraceEnd);
-		}
 	}
 
 	APawn* MyOwner = Cast<APawn>(GetOwner());
